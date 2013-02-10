@@ -43,6 +43,54 @@ class Background:
 # Background
 
 
+class GameObject( pygame.sprite.Sprite ):
+    """
+    Esta é a classe básica de todos os objetos do jogo.
+    """
+
+    def __init__( self, end_image, posicao, velocidade=None ):
+        pygame.sprite.Sprite.__init__( self )
+        self.image = pygame.image.load( end_image )
+
+        self.rect  = self.image.get_rect()
+        screen     = pygame.display.get_surface()
+        self.area  = screen.get_rect()
+        
+        self.set_posicao( posicao )
+        self.set_velocidade( velocidade or ( 0, 2 ) )
+    # __init__()
+
+    def update( self, dt ):
+        velocidade_mov = ( self.velocidade[ 0 ] * dt / 16, self.velocidade[ 1 ] * dt / 16 )
+        self.rect  = self.rect.move( velocidade_mov )
+        if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
+            self.kill()
+        if self.rect.bottom < -40:
+            self.kill()
+    # update()
+
+    def get_velocidade( self ):
+        return self.velocidade
+    # get_velocidade()
+
+    def set_velocidade( self, velocidade ):
+        self.velocidade = velocidade
+    # set_velocidade()
+
+    def get_posicao( self ):
+        return ( self.rect.center[ 0 ], self.rect.bottom )
+    # get_posicao()
+
+    def set_posicao( self, posicao ):
+        self.rect.center = ( posicao[ 0 ], posicao[ 1 ] )
+    # set_posicao()
+
+    def get_size( self ):
+        return self.image.get_size()
+    # get_size()
+# GameObject
+
+
 
 if __name__ == '__main__':
     game = Game()
