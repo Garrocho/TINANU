@@ -227,6 +227,8 @@ class Jogador( Nave ):
         posicao     = self.get_posicao()
         velocidades = self.get_velocidade_tiro( l )
         for velocidade in velocidades:
+            pygame.mixer.music.load('./sons/tiro.wav')
+            pygame.mixer.music.play(0)
             Tiro( posicao, velocidade, end_imagem, lista_tiros )
     # tiro()
 
