@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import pygame
 import random
 from math import ceil
@@ -318,7 +319,7 @@ class JogadorVidaStatus:
         posicao = copy.copy( self.posicao )
         for i in range( self.jogador.get_vidas() ):
             posicao[ 0 ] += self.size_image[ 0 ] + self.spacing
-            screen.blit( self.image, pos )
+            screen.blit( self.imagem, posicao )
     # draw()
 # JogadorVidaStatus
 
@@ -425,12 +426,12 @@ class Game:
             hitted = pygame.sprite.groupcollide( ator, lista, 1, 0 )
             for v in hitted.values():
                 for o in v:
-                    action( o )
+                    acao( o )
             return hitted
 
         elif isinstance( ator, pygame.sprite.Sprite ):
             if pygame.sprite.spritecollide( ator, lista, 1 ):
-                action()
+                acao()
             return ator.is_dead()
     # ator_check_hit()
 
@@ -457,11 +458,11 @@ class Game:
     def modifica_level( self ):
         xp = self.jogador.get_XP()
         if xp > 10  and self.level == 0:
-            self.background = Background( "tile2.png" )
+            self.background = Background( "./imagens/tile2.jpg" )
             self.level = 1
             self.jogador.set_vidas( self.jogador.get_vidas() + 3 )
-        elif xp > 50  and self.level == 1:
-            self.background = Background( "tile3.png" )
+        elif xp > 20  and self.level == 1:
+            self.background = Background( "./imagens/tile3.jpg" )
             self.level = 2        
             self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
     # modifica_level()
