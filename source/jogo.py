@@ -251,7 +251,10 @@ class Game:
     screen      = None
     screen_size = None
     run         = True
+    intervalo   = 0
+    level       = 0
     lista       = None
+    jogador     = None
     background  = None  
     
     def __init__( self ):
@@ -272,7 +275,7 @@ class Game:
         """
         Trata o evento e toma a ação necessária.
         """
-        jogador = self.jogador
+        player = self.player
 
         for event in pygame.event.get():
             t = event.type
@@ -285,27 +288,36 @@ class Game:
             elif t == KEYDOWN:
                 if   k == K_ESCAPE:
                     self.run = False
+                elif k == K_LCTRL or k == K_RCTRL:
+                    self.interval = 0
+                    player.fire( self.list[ "fire" ] )
                 elif k == K_UP:
-                    jogador.accel_top()
+                    player.accel_top()
                 elif k == K_DOWN:
-                    jogador.accel_bottom()
+                    player.accel_bottom()
                 elif k == K_RIGHT:
-                    jogador.accel_right()
+                    player.accel_right()
                 elif k == K_LEFT:
-                    jogador.accel_left()
+                    player.accel_left()
         
             elif t == KEYUP:
                 if   k == K_DOWN:
-                    jogador.accel_top()
+                    player.accel_top()
                 elif k == K_UP:
-                    jogador.accel_bottom()
+                    player.accel_bottom()
                 elif k == K_LEFT:
-                    jogador.accel_right()
+                    player.accel_right()
                 elif k == K_RIGHT:
-                    jogador.accel_left()
+                    player.accel_left()
+        
+            keys = pygame.key.get_pressed()
+            if self.interval > 10:
+                self.interval = 0
+                if keys[ K_RCTRL ] or keys[ K_LCTRL ]:
+                    player.fire( self.list[ "fire" ] )        
     # handle_events()
 
-    def atores_update( self, dt ):        
+    def atores_update( self, dt ):
         self.background.update( dt )
         for ator in self.lista.values():
             ator.update( dt )
