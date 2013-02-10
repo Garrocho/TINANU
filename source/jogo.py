@@ -260,6 +260,28 @@ class Game:
             ator.draw( self.screen )
     # atores_draw()
 
+    def ator_check_hit( self, ator, lista, acao ):
+        if isinstance( ator, pygame.sprite.RenderPlain ):
+            hitted = pygame.sprite.groupcollide( ator, lista, 1, 0 )
+            for v in hitted.values():
+                for o in v:
+                    action( o )
+            return hitted
+
+        elif isinstance( ator, pygame.sprite.Sprite ):
+            if pygame.sprite.spritecollide( ator, lista, 1 ):
+                action()
+            return ator.is_dead()
+    # ator_check_hit()
+    
+    def atores_act( self ):
+        # Verifica se o personagem trombou em algum inimigo
+        self.ator_check_hit( self.jogador, self.lista[ "enemies" ], self.jogador.do_collision )
+        if self.jogador.is_dead():
+            self.run = False
+            return
+    # atores_check_hit()
+
     def manage( self ):
         # criamos mais inimigos randomicamente para o jogo não ficar chato
         r = random.randint( 0, 100 )
