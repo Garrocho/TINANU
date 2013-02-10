@@ -118,6 +118,19 @@ class Nave( GameObject ):
         self.vidas = vidas
     # set_vidas()
 
+   def tiro( self, lista_tiros, end_imagem=None ):
+        s = list( self.get_velocidade() )
+        s[ 1 ] *= 2
+        Tiro( self.get_posicao(), s, end_imagem, lista_tiros )
+    # tiro()
+
+    def do_hit( self ):
+        if self.get_vidas() == 0:
+            self.kill()
+        else:
+            self.set_vidas( self.get_vidas() - 1 )
+    # do_hit()
+
     def do_collision( self ):
         if self.get_vidas() == 0:
             self.kill()
