@@ -209,6 +209,41 @@ class Jogador( Nave ):
     def set_XP( self, XP ):
         self.XP = XP
     # get_XP()
+
+    def tiro( self, lista_tiros, end_imagem=None ):
+        l = 1
+        if self.XP > 10: l = 3
+        if self.XP > 50: l = 5
+        
+        posicao     = self.get_posicao()
+        velocidades = self.get_velocidade_tiro( l )
+        for velocidade in velocidades:
+            Tiro( posicao, velocidade, end_imagem, lista_tiros )
+    # tiro()
+
+    def get_velocidade_tiro( self, municao ):
+        velocidades = []
+
+        if municao <= 0:
+            return velocidades
+        
+        if municao == 1:
+            velocidades += [ (  0, -5 ) ]
+            
+        if municao > 1 and municao <= 3:
+            velocidades += [ (  0, -5 ) ]
+            velocidades += [ ( -2, -3 ) ]
+            velocidades += [ (  2, -3 ) ]
+            
+        if municao > 3 and municao <= 5:
+            velocidades += [ (  0, -5 ) ]
+            velocidades += [ ( -2, -3 ) ]
+            velocidades += [ (  2, -3 ) ]
+            velocidades += [ ( -4, -2 ) ]
+            velocidades += [ (  4, -2 ) ]
+
+        return velocidades
+    # get_velocidade_tiro()
 # Jogador
 
 
