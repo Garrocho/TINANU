@@ -118,6 +118,102 @@ class Inimigo( Nave ):
 # Inimigo
 
 
+class Game:
+    screen      = None
+    screen_size = None
+    run         = True
+    lista       = None
+    background  = None  
+    
+    def __init__( self ):
+        """
+        Esta é a função que inicializa o pygame, define a resolução da tela,
+        caption, e disabilitamos o mouse dentro desta.
+        """
+        atores = {}
+        pygame.init()
+        self.screen      = pygame.display.set_mode( (850, 700) )
+        self.screen_size = self.screen.get_size()
+
+        pygame.mouse.set_visible( 0 )
+        pygame.display.set_caption( 'Battle In Heaven' )
+    # init()
+
+    def handle_events( self ):
+        """
+        Trata o evento e toma a ação necessária.
+        """
+        for event in pygame.event.get():
+            t = event.type
+            if t in ( KEYDOWN, KEYUP ):
+                k = event.key
+        
+            if t == QUIT:
+                self.run = False
+
+            elif t == KEYDOWN:
+                if k == K_ESCAPE:
+                    self.run = False
+    # handle_events()
+
+    def atores_update( self, dt ):        
+        self.background.update( dt )
+        for ator in self.lista.values():
+            ator.update( dt )
+    # atores_update()
+
+    def atores_draw( self ):
+        self.background.draw( self.screen )
+        for ator in self.lista.values():
+            ator.draw( self.screen )
+    # atores_draw()
+
+    def manage( self ):
+        # criamos mais inimigos randomicamente para o jogo não ficar chato
+        r = random.randint( 0, 100 )
+        x = random.randint( 1, self.screen_size[ 0 ] / 20 )
+        if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
+            inimigo = Inimigo( [ 0, 0 ] )
+            size  = inimigo.get_size()
+            inimigo.set_posicao( [ x * size[ 0 ], - size[ 1 ] ] )
+            self.lista[ "inimigos" ].add( inimigo )
+    # manage()
+
+    def loop( self ):
+        """
+        Laço principal
+        """
+        # Criamos o fundo
+        self.background = Background()
+
+        # Inicializamos o relogio e o dt que vai limitar o valor de frames por segundo do jogo
+        clock = pygame.time.Clock()
+        dt    = 16
+
+        self.lista = { "inimigos" : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ), }
+
+        # assim iniciamos o loop principal do programa
+        while self.run:
+            clock.tick( 1000 / dt )
+
+            # Handle Input Events
+            self.handle_events()
+
+            # Atualiza Elementos
+            self.atores_update( dt )
+
+            # Faça a manutenção do jogo, como criar inimigos, etc.
+            self.manage()
+
+            # Desenhe para o back buffer
+            self.atores_draw()
+            
+            # ao fim do desenho temos que trocar o front buffer e o back buffer
+            pygame.display.flip()
+        # while self.run
+    # loop()
+# Game
+
 
 if __name__ == '__main__':
     game = Game()
