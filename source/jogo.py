@@ -293,6 +293,36 @@ class JogadorXPStatus:
 # JogadorXPStatus
 
 
+class JogadorVidaStatus:
+    """
+    Esta classe representa o contador de vidas do jogador
+    """
+    jogador    = None
+    posicao    = None
+    imagem     = None
+    size_image = None
+    spacing    = 5
+
+    def __init__( self, jogador, posicao=None, end_imagem="./imagens/nave_status.png" ):
+        self.imagem     = pygame.image.load( end_imagem )
+        self.jogador    = jogador
+        self.posicao    = posicao or [ 5, 5 ]
+        self.size_image = self.imagem.get_size()
+    # __init__()
+
+    def update( self, dt ):
+        pass
+    # update()
+
+    def draw( self, screen ):
+        posicao = copy.copy( self.posicao )
+        for i in range( self.jogador.get_vidas() ):
+            posicao[ 0 ] += self.size_image[ 0 ] + self.spacing
+            screen.blit( self.image, pos )
+    # draw()
+# JogadorVidaStatus
+
+
 class Game:
     screen      = None
     screen_size = None
