@@ -345,7 +345,18 @@ class Game:
 
         pygame.mouse.set_visible( 0 )
         pygame.display.set_caption( 'TINANU - Tiro nas Nuvens' )
+        self.carrega_imagens()
     # init()
+
+    def carrega_imagens( self ):
+        """
+        Lê as imagens necessarias pelo jogo.
+        """
+        self.imagem_jogador      = pygame.image.load( "./imagens/nave.png" )
+        self.imagem_inimigo      = pygame.image.load( "./imagens/inimigo.png" )
+        self.imagem_tiro         = pygame.image.load( "./imagens/tiro.png" )
+        self.imagem_tiro_inimigo = pygame.image.load( "./imagens/tiro_inimigo.png" )
+    # carrega_imagens()
 
     def handle_events( self ):
         """
@@ -390,19 +401,23 @@ class Game:
             if self.intervalo > 10:
                 self.intervalo = 0
                 if keys[ K_RCTRL ] or keys[ K_LCTRL ]:
-                    jogador.tiro( self.lista[ "tiros" ] )        
+                    jogador.tiro( self.lista[ "tiros" ], self.imagem_tiro )        
     # handle_events()
 
     def atores_update( self, dt ):
         self.background.update( dt )
         for ator in self.lista.values():
             ator.update( dt )
+        self.jogador_vida.update( dt )
+        self.jogador_xp.update( dt )
     # atores_update()
 
     def atores_draw( self ):
         self.background.draw( self.screen )
         for ator in self.lista.values():
             ator.draw( self.screen )
+        self.jogador_vida.draw( self.screen )
+        self.jogador_xp.draw( self.screen )
     # atores_draw()
 
     def ator_check_hit( self, ator, lista, acao ):
@@ -496,6 +511,9 @@ class Game:
             "tiros"          : pygame.sprite.RenderPlain(),
             "tiro_inimigo"  : pygame.sprite.RenderPlain()
             }
+
+        self.jogador_vida = JogadorVidaStatus( self.jogador, [ 5, 5 ] )
+        self.jogador_xp   = JogadorXPStatus( self.jogador, [ self.screen_size[ 0 ] - 100, 5 ], fgcolor="0xff0000" )
 
         # assim iniciamos o loop principal do programa
         while self.run:
