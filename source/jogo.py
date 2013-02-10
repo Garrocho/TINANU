@@ -12,8 +12,8 @@ class Background:
     """
     image = None
     
-    def __init__( self ):
-        image = pygame.image.load( './imagens/tile.jpg' )
+    def __init__( self, end_imagem = './imagens/tile.jpg' ):
+        image = pygame.image.load( end_imagem )
         self.isize  = image.get_size()
         self.pos    = [ 0, -1 * self.isize[ 1 ] ]
         screen      = pygame.display.get_surface()
@@ -48,9 +48,9 @@ class GameObject( pygame.sprite.Sprite ):
     Esta é a classe básica de todos os objetos do jogo.
     """
 
-    def __init__( self, end_image, posicao, velocidade=None ):
+    def __init__( self, end_imagem, posicao, velocidade=None ):
         pygame.sprite.Sprite.__init__( self )
-        self.image = pygame.image.load( end_image )
+        self.image = pygame.image.load( end_imagem )
 
         self.rect  = self.image.get_rect()
         screen     = pygame.display.get_surface()
@@ -92,7 +92,9 @@ class GameObject( pygame.sprite.Sprite ):
 
 
 class Tiro( GameObject ):
-    def __init__( self, posicao, velocidade=None, end_imagem='./imagens/tiro.png', lista=None ):
+    def __init__( self, posicao, velocidade=None, end_imagem=None, lista=None ):
+        if end_imagem == None:
+            end_imagem = "./imagens/tiro.png"
         GameObject.__init__( self, end_imagem, posicao, velocidade )
         if lista != None:
             self.add( lista )
@@ -118,7 +120,7 @@ class Nave( GameObject ):
         self.vidas = vidas
     # set_vidas()
 
-   def tiro( self, lista_tiros, end_imagem=None ):
+    def tiro( self, lista_tiros, end_imagem=None ):
         s = list( self.get_velocidade() )
         s[ 1 ] *= 2
         Tiro( self.get_posicao(), s, end_imagem, lista_tiros )
@@ -165,7 +167,7 @@ class Nave( GameObject ):
 
 
 class Inimigo( Nave ):
-    def __init__( self, posicao, vidas=0, velocidade=None, end_imagem='./imagens/inimigo.png' ):
+    def __init__( self, posicao, vidas=0, velocidade=None, end_imagem="./imagens/inimigo.png" ):
         Nave.__init__( self, posicao, vidas, velocidade, end_imagem )
     # __init__()
 # Inimigo
@@ -176,7 +178,7 @@ class Jogador( Nave ):
     A classe Jogador é uma classe derivada da classe GameObject.
     """
 
-    def __init__( self, posicao, vidas=10, end_imagem='./imagens/nave.png' ):
+    def __init__( self, posicao, vidas=10, end_imagem="./imagens/nave.png" ):
         Nave.__init__( self, posicao, vidas, [ 0, 0 ], end_imagem )
         self.set_XP( 0 )
     # __init__()
@@ -275,7 +277,7 @@ class Game:
         """
         Trata o evento e toma a ação necessária.
         """
-        player = self.player
+        jogador = self.jogador
 
         for event in pygame.event.get():
             t = event.type
@@ -289,32 +291,32 @@ class Game:
                 if   k == K_ESCAPE:
                     self.run = False
                 elif k == K_LCTRL or k == K_RCTRL:
-                    self.interval = 0
-                    player.fire( self.list[ "fire" ] )
+                    self.intervalo = 0
+                    jogador.tiro( self.lista[ "tiros" ] )
                 elif k == K_UP:
-                    player.accel_top()
+                    jogador.accel_top()
                 elif k == K_DOWN:
-                    player.accel_bottom()
+                    jogador.accel_bottom()
                 elif k == K_RIGHT:
-                    player.accel_right()
+                    jogador.accel_right()
                 elif k == K_LEFT:
-                    player.accel_left()
+                    jogador.accel_left()
         
             elif t == KEYUP:
                 if   k == K_DOWN:
-                    player.accel_top()
+                    jogador.accel_top()
                 elif k == K_UP:
-                    player.accel_bottom()
+                    jogador.accel_bottom()
                 elif k == K_LEFT:
-                    player.accel_right()
+                    jogador.accel_right()
                 elif k == K_RIGHT:
-                    player.accel_left()
+                    jogador.accel_left()
         
             keys = pygame.key.get_pressed()
-            if self.interval > 10:
-                self.interval = 0
+            if self.intervalo > 10:
+                self.intervalo = 0
                 if keys[ K_RCTRL ] or keys[ K_LCTRL ]:
-                    player.fire( self.list[ "fire" ] )        
+                    jogador.tiro( self.lista[ "tiros" ] )        
     # handle_events()
 
     def atores_update( self, dt ):
@@ -343,7 +345,7 @@ class Game:
             return ator.is_dead()
     # ator_check_hit()
 
-    def actors_act( self ):
+    def atores_act( self ):
         # Verifica se personagem foi atingido por um tiro
         self.ator_check_hit( self.jogador, self.lista[ "tiro_inimigo" ], self.jogador.do_hit )
         if self.jogador.is_dead():
@@ -364,7 +366,7 @@ class Game:
     # atores_check_hit()
 
     def modifica_level( self ):
-        xp = self.jogaror.get_XP()
+        xp = self.jogador.get_XP()
         if xp > 10  and self.level == 0:
             self.background = Background( "tile2.png" )
             self.level = 1
@@ -379,8 +381,8 @@ class Game:
         self.ticks += 1
         # Faz os inimigos atirarem aleatóriamente
         if self.ticks > random.randint( 20, 30 ):
-            for enemy in self.lista[ "inimigos" ].sprites():
-                if Random.randint( 0, 10 ) > 5:
+            for inimigo in self.lista[ "inimigos" ].sprites():
+                if random.randint( 0, 10 ) > 5:
                     inimigo.tiro( self.lista[ "tiro_inimigo" ], end_imagem="./imagens/tiro_inimigo.png" )
                     self.ticks = 0
         
@@ -388,8 +390,8 @@ class Game:
         r = random.randint( 0, 100 )
         x = random.randint( 1, self.screen_size[ 0 ] / 20 )
         if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
-            enemy = Inimigo( [ 0, 0 ] )
-            size  = inimigo.get_size()
+            inimigo = Inimigo( [ 0, 0 ] )
+            size    = inimigo.get_size()
             inimigo.set_posicao( [ x * size[ 0 ], - size[ 1 ] ] )
             self.lista[ "inimigos" ].add( inimigo )
 
@@ -402,7 +404,7 @@ class Game:
         Laço principal
         """
         # Criamos o fundo
-        self.background = Background( "tile.png" )
+        self.background = Background( "./imagens/tile.jpg" )
 
         # Inicializamos o relogio e o dt que vai limitar o valor de
         # frames por segundo do jogo
@@ -417,7 +419,7 @@ class Game:
         self.lista = {
             "jogador"       : pygame.sprite.RenderPlain( self.jogador ),
             "inimigos"      : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ),
-            "tiro"          : pygame.sprite.RenderPlain(),
+            "tiros"          : pygame.sprite.RenderPlain(),
             "tiro_inimigo"  : pygame.sprite.RenderPlain()
             }
 
