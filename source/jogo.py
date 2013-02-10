@@ -130,6 +130,8 @@ class Nave( GameObject ):
     def do_hit( self ):
         if self.get_vidas() == 0:
             self.kill()
+            pygame.mixer.music.load('./sons/explosao.wav')
+            pygame.mixer.music.play(0)
         else:
             self.set_vidas( self.get_vidas() - 1 )
     # do_hit()
