@@ -108,6 +108,37 @@ class Nave( GameObject ):
     def set_vidas( self, vidas ):
         self.vidas = vidas
     # set_vidas()
+
+    def do_collision( self ):
+        if self.get_vidas() == 0:
+            self.kill()
+        else:
+            self.set_vidas( self.get_vidas() - 1 )
+    # do_collision()
+
+    def is_dead( self ):
+        return self.get_vidas() == 0
+    # is_dead()
+
+    def accel_top( self ):
+        velocidade = self.get_velocidade()
+        self.set_velocidade( ( velocidade[ 0 ], velocidade[ 1 ] - self.acceleration[ 1 ] ) )
+    # accel_top
+
+    def accel_bottom( self ):
+        velocidade = self.get_velocidade()
+        self.set_velocidade( ( velocidade[ 0 ], velocidade[ 1 ] + self.acceleration[ 1 ] ) )
+    # accel_bottom
+
+    def accel_left( self ):        
+        velocidade = self.get_velocidade()
+        self.set_velocidade( ( velocidade[ 0 ] - self.acceleration[ 0 ], velocidade[ 1 ] ) )
+    # accel_left
+
+    def accel_right( self ):
+        velocidade = self.get_velocidade()
+        self.set_velocidade( ( velocidade[ 0 ] + self.acceleration[ 0 ], velocidade[ 1 ] ) )
+    # accel_right
 # Nave
 
 
