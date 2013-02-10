@@ -342,24 +342,59 @@ class Game:
                 action()
             return ator.is_dead()
     # ator_check_hit()
-    
-    def atores_act( self ):
+
+    def actors_act( self ):
+        # Verifica se personagem foi atingido por um tiro
+        self.ator_check_hit( self.jogador, self.lista[ "tiro_inimigo" ], self.jogador.do_hit )
+        if self.jogador.is_dead():
+            self.run = False
+            return
+
         # Verifica se o personagem trombou em algum inimigo
         self.ator_check_hit( self.jogador, self.lista[ "inimigos" ], self.jogador.do_collision )
         if self.jogador.is_dead():
             self.run = False
             return
+
+        # Verifica se o personagem atingiu algum alvo.
+        hitted = self.ator_check_hit( self.lista[ "tiros" ], self.lista[ "inimigos" ], Inimigo.do_hit )
+        
+        # Aumenta a eXPeriência baseado no número de acertos:
+        self.jogador.set_XP( self.jogador.get_XP() + len( hitted ) )
     # atores_check_hit()
 
+    def modifica_level( self ):
+        xp = self.jogaror.get_XP()
+        if xp > 10  and self.level == 0:
+            self.background = Background( "tile2.png" )
+            self.level = 1
+            self.jogador.set_vidas( self.jogador.get_vidas() + 3 )
+        elif xp > 50  and self.level == 1:
+            self.background = Background( "tile3.png" )
+            self.level = 2        
+            self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
+    # modifica_level()
+
     def manage( self ):
+        self.ticks += 1
+        # Faz os inimigos atirarem aleatóriamente
+        if self.ticks > random.randint( 20, 30 ):
+            for enemy in self.lista[ "inimigos" ].sprites():
+                if Random.randint( 0, 10 ) > 5:
+                    inimigo.tiro( self.lista[ "tiro_inimigo" ], end_imagem="./imagens/tiro_inimigo.png" )
+                    self.ticks = 0
+        
         # criamos mais inimigos randomicamente para o jogo não ficar chato
         r = random.randint( 0, 100 )
         x = random.randint( 1, self.screen_size[ 0 ] / 20 )
         if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
-            inimigo = Inimigo( [ 0, 0 ] )
+            enemy = Inimigo( [ 0, 0 ] )
             size  = inimigo.get_size()
             inimigo.set_posicao( [ x * size[ 0 ], - size[ 1 ] ] )
             self.lista[ "inimigos" ].add( inimigo )
+
+        # Verifica se ascendeu de nível
+        self.modifica_level()
     # manage()
 
     def loop( self ):
@@ -367,21 +402,29 @@ class Game:
         Laço principal
         """
         # Criamos o fundo
-        self.background = Background()
+        self.background = Background( "tile.png" )
 
-        # Inicializamos o relogio e o dt que vai limitar o valor de frames por segundo do jogo
-        clock = pygame.time.Clock()
-        dt    = 16
+        # Inicializamos o relogio e o dt que vai limitar o valor de
+        # frames por segundo do jogo
+        clock          = pygame.time.Clock()
+        dt             = 16
+        self.ticks     = 0
+        self.intervalo = 1
 
         posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] ]
         self.jogador = Jogador( posicao, vidas=10 )
 
-        self.lista   = {"inimigos" : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ), 
-                        "jogador" : pygame.sprite.RenderPlain( self.jogador ), }
+        self.lista = {
+            "jogador"       : pygame.sprite.RenderPlain( self.jogador ),
+            "inimigos"      : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ),
+            "tiro"          : pygame.sprite.RenderPlain(),
+            "tiro_inimigo"  : pygame.sprite.RenderPlain()
+            }
 
         # assim iniciamos o loop principal do programa
         while self.run:
             clock.tick( 1000 / dt )
+            self.intervalo += 1
 
             # Handle Input Events
             self.handle_events()
