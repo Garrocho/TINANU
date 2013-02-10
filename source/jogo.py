@@ -149,6 +149,47 @@ class Inimigo( Nave ):
 # Inimigo
 
 
+class Jogador( Ship ):
+    """
+    A classe Jogador é uma classe derivada da classe GameObject.
+    """
+
+    def __init__( self, posicao, vidas=10, end_imagem='./imagens/nave.png' ):
+        Nave.__init__( self, posicao, vidas, [ 0, 0 ], end_imagem )
+        self.set_XP( 0 )
+    # __init__()
+
+    def update( self, dt ):
+        velocidade_mov = ( self.velocidade[ 0 ] * dt / 16, self.velocidade[ 1 ] * dt / 16)
+        self.rect  = self.rect.move( velocidade_mov )
+        
+        if ( self.rect.right > self.area.right ):
+            self.rect.right = self.area.right
+            
+        elif ( self.rect.left < 0 ):
+            self.rect.left = 0
+            
+        if ( self.rect.bottom > self.area.bottom ):
+            self.rect.bottom = self.area.bottom
+            
+        elif ( self.rect.top < 0 ):
+            self.rect.top = 0
+    # update()
+    
+    def get_posicao( self ):
+        return ( self.rect.center[ 0 ], self.rect.top )
+    # get_posicao()
+    
+    def get_XP( self ):
+        return self.XP
+    # get_XP()
+
+    def set_XP( self, XP ):
+        self.XP = XP
+    # get_XP()
+# Jogador
+
+
 class Game:
     screen      = None
     screen_size = None
@@ -174,6 +215,8 @@ class Game:
         """
         Trata o evento e toma a ação necessária.
         """
+        jogador = self.jogador
+
         for event in pygame.event.get():
             t = event.type
             if t in ( KEYDOWN, KEYUP ):
@@ -183,8 +226,26 @@ class Game:
                 self.run = False
 
             elif t == KEYDOWN:
-                if k == K_ESCAPE:
+                if   k == K_ESCAPE:
                     self.run = False
+                elif k == K_UP:
+                    jogador.accel_top()
+                elif k == K_DOWN:
+                    jogador.accel_bottom()
+                elif k == K_RIGHT:
+                    jogador.accel_right()
+                elif k == K_LEFT:
+                    jogador.accel_left()
+        
+            elif t == KEYUP:
+                if   k == K_DOWN:
+                    jogador.accel_top()
+                elif k == K_UP:
+                    jogador.accel_bottom()
+                elif k == K_LEFT:
+                    jogador.accel_right()
+                elif k == K_RIGHT:
+                    jogador.accel_left()
     # handle_events()
 
     def atores_update( self, dt ):        
@@ -221,7 +282,11 @@ class Game:
         clock = pygame.time.Clock()
         dt    = 16
 
-        self.lista = { "inimigos" : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ), }
+        posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] ]
+        self.jogador = Jogador( posicao, vidas=10 )
+
+        self.lista   = {"inimigos" : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ), 
+                        "jogador" : pygame.sprite.RenderPlain( self.jogador ), }
 
         # assim iniciamos o loop principal do programa
         while self.run:
@@ -233,9 +298,12 @@ class Game:
             # Atualiza Elementos
             self.atores_update( dt )
 
+            # Faça os atores atuarem
+            self.atores_act()
+
             # Faça a manutenção do jogo, como criar inimigos, etc.
             self.manage()
-
+            
             # Desenhe para o back buffer
             self.atores_draw()
             
