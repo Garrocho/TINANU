@@ -91,6 +91,15 @@ class GameObject( pygame.sprite.Sprite ):
 # GameObject
 
 
+class Tiro( GameObject ):
+    def __init__( self, posicao, velocidade=None, end_imagem='./imagens/tiro.png', lista=None ):
+        GameObject.__init__( self, end_imagem, posicao, velocidade )
+        if lista != None:
+            self.add( lista )
+    # __init__()
+# Tiro
+
+
 class Nave( GameObject ):
 
     vidas = None
@@ -149,7 +158,7 @@ class Inimigo( Nave ):
 # Inimigo
 
 
-class Jogador( Ship ):
+class Jogador( Nave ):
     """
     A classe Jogador é uma classe derivada da classe GameObject.
     """
@@ -208,7 +217,7 @@ class Game:
         self.screen_size = self.screen.get_size()
 
         pygame.mouse.set_visible( 0 )
-        pygame.display.set_caption( 'Battle In Heaven' )
+        pygame.display.set_caption( 'TINANU - Tiro nas Nuvens' )
     # init()
 
     def handle_events( self ):
@@ -276,7 +285,7 @@ class Game:
     
     def atores_act( self ):
         # Verifica se o personagem trombou em algum inimigo
-        self.ator_check_hit( self.jogador, self.lista[ "enemies" ], self.jogador.do_collision )
+        self.ator_check_hit( self.jogador, self.lista[ "inimigos" ], self.jogador.do_collision )
         if self.jogador.is_dead():
             self.run = False
             return
