@@ -111,6 +111,13 @@ class Nave( GameObject ):
 # Nave
 
 
+class Inimigo( Nave ):
+    def __init__( self, posicao, vidas=0, velocidade=None, end_imagem='./imagens/inimigo.png' ):
+        Nave.__init__( self, posicao, vidas, velocidade, end_imagem )
+    # __init__()
+# Inimigo
+
+
 
 if __name__ == '__main__':
     game = Game()
