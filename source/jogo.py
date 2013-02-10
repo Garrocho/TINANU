@@ -167,7 +167,13 @@ class Nave( GameObject ):
 
 
 class Inimigo( Nave ):
-    def __init__( self, posicao, vidas=0, velocidade=None, end_imagem="./imagens/inimigo.png" ):
+    def __init__( self, posicao, vidas=0, velocidade=None, behaviour=0, end_imagem="./imagens/inimigo.png" ):
+        if   behaviour == 0: # Inimigo normal, desce reto
+            velocidade = (  0, 3 )
+        elif behaviour == 1: # Inimigo que desce da esquerda pra direita
+            velocidade = (  2, 3 )
+        elif behaviour == 2: # Inimigo que desce da direita pra esquerda
+            velocidade = ( -2, 3 )
         Nave.__init__( self, posicao, vidas, velocidade, end_imagem )
     # __init__()
 # Inimigo
@@ -247,6 +253,44 @@ class Jogador( Nave ):
         return velocidades
     # get_velocidade_tiro()
 # Jogador
+
+
+class JogadorXPStatus:
+    """
+    Esta classe representa a experiência do usuário
+    """
+    fonte   = None
+    last_xp = -1
+    fgcolor = None
+    bgcolor = None
+    imagem  = None
+    
+    def __init__( self, jogador, posicao=None, fonte=None, ptsize=30, fgcolor="0xffff00", bgcolor=None ):
+        self.jogador = jogador
+        self.fgcolor = pygame.color.Color( fgcolor )
+        if bgcolor:
+            self.bgcolor = pygame.color.Color( bgcolor )
+        self.posicao = posicao or [ 0, 0 ]
+        self.fonte   = pygame.font.Font( fonte, ptsize )
+    # __init__()
+
+    def update( self, dt ):
+        pass
+    # update()
+
+    def draw( self, screen ):
+        xp = self.jogador.get_XP()
+        if self.last_xp != xp:
+            self.last_xp = xp
+            texto = "XP: % 4d" % xp
+            if self.bgcolor:
+                self.imagem = self.fonte.render( texto, True, self.fgcolor, self.bgcolor )
+            else:                
+                self.imagem = self.fonte.render( texto, True, self.fgcolor )
+                
+        screen.blit( self.imagem, self.posicao )   
+    # draw()
+# JogadorXPStatus
 
 
 class Game:
