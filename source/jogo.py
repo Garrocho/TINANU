@@ -91,6 +91,26 @@ class GameObject( pygame.sprite.Sprite ):
 # GameObject
 
 
+class Nave( GameObject ):
+
+    vidas = None
+
+    def __init__( self, posicao, vidas=0, velocidade=[ 0, 0 ], end_imagem=None ):
+        self.acceleration = [ 3, 3 ]
+        GameObject.__init__( self, end_imagem, posicao, velocidade )
+        self.set_vidas( vidas )
+    # __init__()
+
+    def get_vidas( self ):
+        return self.vidas
+    # get_vidas()
+
+    def set_vidas( self, vidas ):
+        self.vidas = vidas
+    # set_vidas()
+# Nave
+
+
 
 if __name__ == '__main__':
     game = Game()
