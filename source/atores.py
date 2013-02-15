@@ -13,7 +13,7 @@ class Background:
     Esta classe representa o ator "Fundo" do jogo.
     """
     image = None
-    
+
     def __init__( self, end_imagem = './imagens/tile.jpg' ):
         image = pygame.image.load( end_imagem )
         self.isize  = image.get_size()
@@ -50,9 +50,9 @@ class GameObject( pygame.sprite.Sprite ):
     Esta é a classe básica de todos os objetos do jogo.
     """
 
-    def __init__( self, end_imagem, posicao, velocidade=None ):
+    def __init__( self, imagem, posicao, velocidade=None ):
         pygame.sprite.Sprite.__init__( self )
-        self.image = pygame.image.load( end_imagem )
+        self.image = imagem
 
         self.rect  = self.image.get_rect()
         screen     = pygame.display.get_surface()
@@ -94,10 +94,8 @@ class GameObject( pygame.sprite.Sprite ):
 
 
 class Tiro( GameObject ):
-    def __init__( self, posicao, velocidade=None, end_imagem=None, lista=None ):
-        if end_imagem == None:
-            end_imagem = "./imagens/tiro.png"
-        GameObject.__init__( self, end_imagem, posicao, velocidade )
+    def __init__( self, posicao, velocidade=None, imagem=None, lista=None ):
+        GameObject.__init__( self, imagem, posicao, velocidade )
         if lista != None:
             self.add( lista )
     # __init__()
@@ -108,9 +106,9 @@ class Nave( GameObject ):
 
     vidas = None
 
-    def __init__( self, posicao, vidas=0, velocidade=[ 0, 0 ], end_imagem=None ):
+    def __init__( self, posicao, vidas=0, velocidade=[ 0, 0 ], imagem=None ):
         self.acceleration = [ 3, 3 ]
-        GameObject.__init__( self, end_imagem, posicao, velocidade )
+        GameObject.__init__( self, imagem, posicao, velocidade )
         self.set_vidas( vidas )
     # __init__()
 
@@ -122,10 +120,10 @@ class Nave( GameObject ):
         self.vidas = vidas
     # set_vidas()
 
-    def tiro( self, lista_tiros, end_imagem=None ):
+    def tiro( self, lista_tiros, imagem=None ):
         s = list( self.get_velocidade() )
         s[ 1 ] *= 2
-        Tiro( self.get_posicao(), s, end_imagem, lista_tiros )
+        Tiro( self.get_posicao(), s, imagem, lista_tiros )
     # tiro()
 
     def do_hit( self ):
@@ -171,14 +169,14 @@ class Nave( GameObject ):
 
 
 class Inimigo( Nave ):
-    def __init__( self, posicao, vidas=0, velocidade=None, behaviour=0, end_imagem="./imagens/inimigo.png" ):
+    def __init__( self, posicao, vidas=0, velocidade=None, behaviour=0, imagem=None):
         if   behaviour == 0: # Inimigo normal, desce reto
             velocidade = (  0, 3 )
         elif behaviour == 1: # Inimigo que desce da esquerda pra direita
             velocidade = (  2, 3 )
         elif behaviour == 2: # Inimigo que desce da direita pra esquerda
             velocidade = ( -2, 3 )
-        Nave.__init__( self, posicao, vidas, velocidade, end_imagem )
+        Nave.__init__( self, posicao, vidas, velocidade, imagem )
     # __init__()
 # Inimigo
 
@@ -188,8 +186,8 @@ class Jogador( Nave ):
     A classe Jogador é uma classe derivada da classe GameObject.
     """
 
-    def __init__( self, posicao, vidas=10, end_imagem="./imagens/nave.png" ):
-        Nave.__init__( self, posicao, vidas, [ 0, 0 ], end_imagem )
+    def __init__( self, posicao, vidas=10, imagem=None ):
+        Nave.__init__( self, posicao, vidas, [ 0, 0 ], imagem )
         self.set_XP( 0 )
     # __init__()
 
@@ -222,7 +220,7 @@ class Jogador( Nave ):
         self.XP = XP
     # get_XP()
 
-    def tiro( self, lista_tiros, end_imagem=None ):
+    def tiro( self, lista_tiros, imagem=None ):
         l = 1
         if self.XP > 10: l = 3
         if self.XP > 50: l = 5
@@ -232,7 +230,7 @@ class Jogador( Nave ):
         for velocidade in velocidades:
             pygame.mixer.music.load('./sons/tiro.wav')
             pygame.mixer.music.play(0)
-            Tiro( posicao, velocidade, end_imagem, lista_tiros )
+            Tiro( posicao, velocidade, imagem, lista_tiros )
     # tiro()
 
     def get_velocidade_tiro( self, municao ):
