@@ -132,7 +132,7 @@ class Game:
                     self.run = False
                 elif k == K_LCTRL or k == K_RCTRL:
                     self.intervalo = 0
-                    jogador.tiro( self.lista[ "tiros" ] )
+                    jogador.tiro( lista_tiros = self.lista[ "tiros" ], imagem = self.imagem_tiro )
                 elif k == K_UP:
                     jogador.accel_top()
                 elif k == K_DOWN:
@@ -231,14 +231,14 @@ class Game:
         if self.ticks > random.randint( 20, 30 ):
             for inimigo in self.lista[ "inimigos" ].sprites():
                 if random.randint( 0, 10 ) > 5:
-                    inimigo.tiro( self.lista[ "tiro_inimigo" ], end_imagem="./imagens/tiro_inimigo.png" )
+                    inimigo.tiro( self.lista[ "tiro_inimigo" ], imagem = self.imagem_tiro_inimigo )
                     self.ticks = 0
         
         # criamos mais inimigos randomicamente para o jogo não ficar chato
         r = random.randint( 0, 100 )
         x = random.randint( 1, self.screen_size[ 0 ] / 20 )
         if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
-            inimigo = Inimigo( [ 0, 0 ] )
+            inimigo = Inimigo( posicao = [ 0, 0 ], imagem = self.imagem_inimigo )
             size    = inimigo.get_size()
             inimigo.set_posicao( [ x * size[ 0 ], - size[ 1 ] ] )
             self.lista[ "inimigos" ].add( inimigo )
@@ -262,12 +262,12 @@ class Game:
         self.intervalo = 1
 
         posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] ]
-        self.jogador = Jogador( posicao, vidas=10 )
+        self.jogador = Jogador( posicao, vidas=10, imagem = self.imagem_jogador )
 
         self.lista = {
             "jogador"       : pygame.sprite.RenderPlain( self.jogador ),
-            "inimigos"      : pygame.sprite.RenderPlain( Inimigo( [ 120, 0 ] ) ),
-            "tiros"          : pygame.sprite.RenderPlain(),
+            "inimigos"      : pygame.sprite.RenderPlain( Inimigo( posicao = [ 120, 0 ], imagem = self.imagem_inimigo ) ),
+            "tiros"         : pygame.sprite.RenderPlain(),
             "tiro_inimigo"  : pygame.sprite.RenderPlain()
             }
 
