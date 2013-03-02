@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
+# @author: Charles Tim Batista Garrocho
+# @contact: ccharles.garrocho@gmail.com
+# @copyright: (C) 2013 - 2013 Python Software Open Source
+
 """
 Este é o módulo responsável pelos atores do jogo, como background, jogador, inimigos, etc.
 """
 
+
 import pygame
+import settings
 from math import ceil
 from pygame.locals import *
 
@@ -14,7 +20,7 @@ class Background:
     """
     image = None
 
-    def __init__( self, end_imagem = './imagens/tile.jpg' ):
+    def __init__( self, end_imagem = settings.IMG_TILE_1 ):
         image = pygame.image.load( end_imagem )
         self.isize  = image.get_size()
         self.pos    = [ 0, -1 * self.isize[ 1 ] ]
@@ -129,7 +135,7 @@ class Nave( GameObject ):
     def do_hit( self ):
         if self.get_vidas() == 0:
             self.kill()
-            pygame.mixer.music.load('./sons/explosao.wav')
+            pygame.mixer.music.load( settings.SONS_EXPLOSAO )
             pygame.mixer.music.play(0)
         else:
             self.set_vidas( self.get_vidas() - 1 )
@@ -228,7 +234,7 @@ class Jogador( Nave ):
         posicao     = self.get_posicao()
         velocidades = self.get_velocidade_tiro( l )
         for velocidade in velocidades:
-            pygame.mixer.music.load('./sons/tiro.wav')
+            pygame.mixer.music.load( settings.SONS_TIRO )
             pygame.mixer.music.play(0)
             Tiro( posicao, velocidade, imagem, lista_tiros )
     # tiro()
