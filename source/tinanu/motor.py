@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+# @author: Charles Tim Batista Garrocho
+# @contact: ccharles.garrocho@gmail.com
+# @copyright: (C) 2013 - 2013 Python Software Open Source
+
 """
 Este é o módulo responsável por toda interação dos atores no jogo.
 """
 
+
 import copy
 import pygame
 import random
+import settings
 from pygame.locals import *
 from atores import *
 
@@ -58,7 +64,7 @@ class JogadorVidaStatus:
     size_image = None
     spacing    = 5
 
-    def __init__( self, jogador, posicao=None, end_imagem="./imagens/nave_status.png" ):
+    def __init__( self, jogador, posicao=None, end_imagem=settings.IMG_NAVE_STATUS ):
         self.imagem     = pygame.image.load( end_imagem )
         self.jogador    = jogador
         self.posicao    = posicao or [ 5, 5 ]
@@ -107,10 +113,10 @@ class Game:
         """
         Lê as imagens necessarias pelo jogo.
         """
-        self.imagem_jogador      = pygame.image.load( "./imagens/nave.png" )
-        self.imagem_inimigo      = pygame.image.load( "./imagens/inimigo.png" )
-        self.imagem_tiro         = pygame.image.load( "./imagens/tiro.png" )
-        self.imagem_tiro_inimigo = pygame.image.load( "./imagens/tiro_inimigo.png" )
+        self.imagem_jogador      = pygame.image.load( settings.IMG_NAVE_JOGADOR )
+        self.imagem_inimigo      = pygame.image.load( settings.IMG_NAVE_INIMIGO )
+        self.imagem_tiro         = pygame.image.load( settings.IMG_TIRO_JOGADOR )
+        self.imagem_tiro_inimigo = pygame.image.load( settings.IMG_TIRO_INIMIGO )
     # carrega_imagens()
 
     def handle_events( self ):
@@ -212,15 +218,15 @@ class Game:
     def modifica_level( self ):
         xp = self.jogador.get_XP()
         if xp > 2  and self.level == 0:
-            self.background = Background( "./imagens/tile2.jpg" )
+            self.background = Background( settings.IMG_TILE_2 )
             self.level = 1
             self.jogador.set_vidas( self.jogador.get_vidas() + 3 )
         elif xp > 5  and self.level == 1:
-            self.background = Background( "./imagens/tile3.jpg" )
+            self.background = Background( settings.IMG_TILE_3 )
             self.level = 2        
             self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
         elif xp > 10  and self.level == 2:
-            self.background = Background( "./imagens/tile4.jpg" )
+            self.background = Background( settings.IMG_TILE_4 )
             self.level = 3      
             self.jogador.set_vidas( self.jogador.get_vidas() + 9 )
     # modifica_level()
@@ -252,7 +258,7 @@ class Game:
         Laço principal
         """
         # Criamos o fundo
-        self.background = Background( "./imagens/tile.jpg" )
+        self.background = Background( settings.IMG_TILE_1 )
 
         # Inicializamos o relogio e o dt que vai limitar o valor de
         # frames por segundo do jogo
@@ -299,8 +305,3 @@ class Game:
         # while self.run
     # loop()
 # Game
-
-
-if __name__ == '__main__':
-    game = Game()
-    game.loop()
