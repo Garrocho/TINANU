@@ -9,6 +9,7 @@ Este é o módulo responsável por toda interação dos atores no jogo.
 
 
 import copy
+import media
 import pygame
 import random
 import settings
@@ -64,7 +65,7 @@ class JogadorVidaStatus:
     size_image = None
     spacing    = 5
 
-    def __init__( self, jogador, posicao=None, end_imagem=settings.IMG_NAVE_STATUS ):
+    def __init__( self, jogador, posicao=None, end_imagem= media.carrega_imagem(settings.IMG_NAVE_STATUS) ):
         self.imagem     = pygame.image.load( end_imagem )
         self.jogador    = jogador
         self.posicao    = posicao or [ 5, 5 ]
@@ -105,7 +106,7 @@ class Game:
         self.screen_size = self.screen.get_size()
 
         pygame.mouse.set_visible( 0 )
-        pygame.display.set_caption( 'TINANU - Tiro nas Nuvens' )
+        pygame.display.set_caption( 'TiNaNu - Tiro nas Nuvens' )
         self.carrega_imagens()
     # init()
 
@@ -113,10 +114,10 @@ class Game:
         """
         Lê as imagens necessarias pelo jogo.
         """
-        self.imagem_jogador      = pygame.image.load( settings.IMG_NAVE_JOGADOR )
-        self.imagem_inimigo      = pygame.image.load( settings.IMG_NAVE_INIMIGO )
-        self.imagem_tiro         = pygame.image.load( settings.IMG_TIRO_JOGADOR )
-        self.imagem_tiro_inimigo = pygame.image.load( settings.IMG_TIRO_INIMIGO )
+        self.imagem_jogador      = pygame.image.load( media.carrega_imagem(settings.IMG_NAVE_JOGADOR) )
+        self.imagem_inimigo      = pygame.image.load( media.carrega_imagem(settings.IMG_NAVE_INIMIGO) )
+        self.imagem_tiro         = pygame.image.load( media.carrega_imagem(settings.IMG_TIRO_JOGADOR) )
+        self.imagem_tiro_inimigo = pygame.image.load( media.carrega_imagem(settings.IMG_TIRO_INIMIGO) )
     # carrega_imagens()
 
     def handle_events( self ):
@@ -218,15 +219,15 @@ class Game:
     def modifica_level( self ):
         xp = self.jogador.get_XP()
         if xp > 2  and self.level == 0:
-            self.background = Background( settings.IMG_TILE_2 )
+            self.background = Background( media.carrega_imagem(settings.IMG_TILE_2) )
             self.level = 1
             self.jogador.set_vidas( self.jogador.get_vidas() + 3 )
         elif xp > 5  and self.level == 1:
-            self.background = Background( settings.IMG_TILE_3 )
+            self.background = Background( media.carrega_imagem(settings.IMG_TILE_3) )
             self.level = 2        
             self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
         elif xp > 10  and self.level == 2:
-            self.background = Background( settings.IMG_TILE_4 )
+            self.background = Background( media.carrega_imagem(settings.IMG_TILE_4) )
             self.level = 3      
             self.jogador.set_vidas( self.jogador.get_vidas() + 9 )
     # modifica_level()
@@ -258,7 +259,7 @@ class Game:
         Laço principal
         """
         # Criamos o fundo
-        self.background = Background( settings.IMG_TILE_1 )
+        self.background = Background( media.carrega_imagem(settings.IMG_TILE_1) )
 
         # Inicializamos o relogio e o dt que vai limitar o valor de
         # frames por segundo do jogo
