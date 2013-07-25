@@ -218,18 +218,22 @@ class Game:
 
     def modifica_level( self ):
         xp = self.jogador.get_XP()
-        if xp > 2  and self.level == 0:
+        if xp > 5  and self.level == 0:
             self.background = Background( media.carrega_imagem(settings.IMG_TILE_2) )
             self.level = 1
-            self.jogador.set_vidas( self.jogador.get_vidas() + 3 )
-        elif xp > 5  and self.level == 1:
+            self.jogador.set_vidas( self.jogador.get_vidas() + 2 )
+        elif xp > 10  and self.level == 1:
             self.background = Background( media.carrega_imagem(settings.IMG_TILE_3) )
             self.level = 2        
-            self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
-        elif xp > 10  and self.level == 2:
+            self.jogador.set_vidas( self.jogador.get_vidas() + 4 )
+        elif xp > 15  and self.level == 2:
             self.background = Background( media.carrega_imagem(settings.IMG_TILE_4) )
             self.level = 3      
-            self.jogador.set_vidas( self.jogador.get_vidas() + 9 )
+            self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
+        elif xp > 20  and self.level == 3:
+            self.background = Background( media.carrega_imagem(settings.IMG_TILE_5) )
+            self.level = 4   
+            self.jogador.set_vidas( self.jogador.get_vidas() + 8 )
     # modifica_level()
 
     def manage( self ):
