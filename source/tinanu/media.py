@@ -9,6 +9,7 @@ Este é o módulo responsável por realizar o carregamento dos endereços de fon
 
 
 import os
+import pygame
 from os.path import join as join_path
 
 
@@ -28,15 +29,24 @@ def endereco_arquivo(tipo, nome_arquivo):
 
 
 def carrega(tipo, nome_arquivo, modo='rb'):
-    return open(endereco_arquivo(tipo, nome_arquivo), modo)
+	return open(endereco_arquivo(tipo, nome_arquivo), modo)
 
 
 def carrega_fonte(nome_arquivo):
-    return carrega('fontes', nome_arquivo)
-
+    return endereco_arquivo('fontes', nome_arquivo)
 
 def carrega_imagem(nome_arquivo):
-    return carrega('imagens', nome_arquivo)
+	return endereco_arquivo('imagens', nome_arquivo)
+
+def carrega_imagem_menu(nome_arquivo):
+	filename = carrega('imagens', nome_arquivo)
+	try:
+		image = pygame.image.load(filename)
+		return image
+		image = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
+	except pygame.error:
+		raise SystemExit, "Unable to load: " + filename
+	return image
 
 
 def carrega_son(nome_arquivo):
