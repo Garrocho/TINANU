@@ -21,6 +21,7 @@ IMG_TILE_1 = "tile.jpg"
 IMG_TILE_2 = "tile2.jpg"
 IMG_TILE_3 = "tile3.jpg"
 IMG_TILE_4 = "tile4.jpg"
+IMG_TILE_5 = "tile5.png"
 
 # Path dos tiros.
 SONS_TIRO = 'tiro.wav'
