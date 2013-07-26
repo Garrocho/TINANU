@@ -48,6 +48,26 @@ def carrega_imagem_menu(nome_arquivo):
 		raise SystemExit, "Unable to load: " + filename
 	return image
 
-
 def carrega_son(nome_arquivo):
     return carrega('sons', nome_arquivo)
+
+def executar_musica(filename, volume=0.5, loop=-1):
+    filename = carrega_son(filename)
+    try:
+        pygame.mixer.music.load(filename)
+        pygame.mixer.music.set_volume(volume)
+        pygame.mixer.music.play(loop)
+    except:
+        raise SystemExit, "Unable to load: " + filename
+
+def parar_musica():
+    pygame.mixer.music.stop()
+
+def obter_som(filename, volume=1.0):
+    filename = carrega_son(filename)
+    try:
+        sound = pygame.mixer.Sound(filename)
+        sound.set_volume(volume)
+    except:
+        raise SystemExit, "Unable to load: " + filename
+    return sound
