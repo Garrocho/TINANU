@@ -117,6 +117,7 @@ class Nave( GameObject ):
         self.acceleration = [ 3, 3 ]
         GameObject.__init__( self, imagem, posicao, velocidade )
         self.set_vidas( vidas )
+        self.explosao = media.obter_som('explosao.wav')
     # __init__()
 
     def get_vidas( self ):
@@ -136,8 +137,7 @@ class Nave( GameObject ):
     def do_hit( self ):
         if self.get_vidas() == 0:
             self.kill()
-            pygame.mixer.music.load( media.carrega_son(settings.SONS_EXPLOSAO) )
-            pygame.mixer.music.play(0)
+            self.explosao.play()
         else:
             self.set_vidas( self.get_vidas() - 1 )
     # do_hit()
@@ -235,8 +235,6 @@ class Jogador( Nave ):
         posicao     = self.get_posicao()
         velocidades = self.get_velocidade_tiro( l )
         for velocidade in velocidades:
-            pygame.mixer.music.load( media.carrega_son(settings.SONS_TIRO) )
-            pygame.mixer.music.play(0)
             Tiro( posicao, velocidade, imagem, lista_tiros )
     # tiro()
 
