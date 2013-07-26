@@ -8,9 +8,14 @@ Este é o módulo responsável definir as configurações e iniciar o jogo.
 """
 
 
-import motor
+import menu
+import pygame
 
 
 if __name__ == '__main__':
-    game = motor.Game()
-    game.loop()
+    pygame.init()
+    pygame.mouse.set_visible(0)
+    pygame.display.set_caption("Tiro nas Nuvens")
+    size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+    menu.Menu(screen)
