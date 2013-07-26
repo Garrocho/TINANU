@@ -1,24 +1,22 @@
-#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# @author: Charles Tim Batista Garrocho
+# @contact: ccharles.garrocho@gmail.com
+# @copyright: (C) 2013 - 2013 Python Software Open Source
+
+"""
+Este é o módulo responsável definir as configurações e iniciar o jogo.
+"""
 
 import pygame, sys
 from pygame.locals import *
-
 from ezmenu import *
+import motor
 import media
-import os
 
 
-def NovoJogo(screen):
-    pass
-    #media.executar_musica("musica.ogg", 0.75)
-    #Game(screen)
-    #play_music("title.ogg", 0.75)
-
-
-def Continuar(screen):
-    pass
-    #Game(screen, True)
-    #play_music("title.ogg", 0.75)
+def novoJogo(screen):
+    game = motor.Game(screen)
+    game.loop()
 
 
 class Menu(object):    
@@ -26,7 +24,7 @@ class Menu(object):
     def __init__(self, screen):
         media.executar_musica("menu.ogg", 0.75)
         self.screen = screen
-        self.menu = EzMenu(["Novo Jogo", lambda: NovoJogo(screen)], ["Continuar", lambda: Continuar(screen)], ["Sair", sys.exit])
+        self.menu = EzMenu(["Novo Jogo", lambda: novoJogo(screen)], ["Sair", sys.exit])
         self.menu.set_highlight_color((255, 0, 0))
         self.menu.set_normal_color((255, 255, 255))
         self.menu.center_at(300, 400)
@@ -58,12 +56,3 @@ class Menu(object):
 
             self.menu.draw(self.screen)
             pygame.display.flip()
-
-
-if __name__ == '__main__':
-    pygame.init()
-    pygame.mouse.set_visible(0)
-    pygame.display.set_caption("Tiro nas Nuvens")
-    size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-    Menu(screen)
