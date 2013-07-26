@@ -8,13 +8,14 @@ import media
 import os
 
 
-def RunGame(screen):
+def NovoJogo(screen):
     pass
+    #media.executar_musica("musica.ogg", 0.75)
     #Game(screen)
     #play_music("title.ogg", 0.75)
 
 
-def ContinueGame(screen):
+def Continuar(screen):
     pass
     #Game(screen, True)
     #play_music("title.ogg", 0.75)
@@ -23,8 +24,9 @@ def ContinueGame(screen):
 class Menu(object):    
 
     def __init__(self, screen):
+        media.executar_musica("menu.ogg", 0.75)
         self.screen = screen
-        self.menu = EzMenu(["Jogar", lambda: RunGame(screen)], ["Continuar", lambda: ContinueGame(screen)], ["Sair", sys.exit])
+        self.menu = EzMenu(["Novo Jogo", lambda: NovoJogo(screen)], ["Continuar", lambda: Continuar(screen)], ["Sair", sys.exit])
         self.menu.set_highlight_color((255, 0, 0))
         self.menu.set_normal_color((255, 255, 255))
         self.menu.center_at(300, 400)
