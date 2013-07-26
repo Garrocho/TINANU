@@ -93,16 +93,17 @@ class Game:
     level       = 0
     lista       = None
     jogador     = None
-    background  = None  
+    background  = None 
     
-    def __init__( self ):
+    def __init__( self, screen ):
         """
         Esta é a função que inicializa o pygame, define a resolução da tela,
         caption, e disabilitamos o mouse dentro desta.
         """
         atores = {}
-        pygame.init()
-        self.screen      = pygame.display.set_mode( (850, 700) )
+        media.executar_musica("musica.ogg", 0.75)
+        self.som_tiro = media.obter_som('tiro.wav') 
+        self.screen      = screen
         self.screen_size = self.screen.get_size()
 
         pygame.mouse.set_visible( 0 )
@@ -139,6 +140,7 @@ class Game:
                     self.run = False
                 elif k == K_LCTRL or k == K_RCTRL:
                     self.intervalo = 0
+                    self.som_tiro.play()
                     jogador.tiro( lista_tiros = self.lista[ "tiros" ], imagem = self.imagem_tiro )
                 elif k == K_UP:
                     jogador.accel_top()
@@ -163,6 +165,7 @@ class Game:
             if self.intervalo > 10:
                 self.intervalo = 0
                 if keys[ K_RCTRL ] or keys[ K_LCTRL ]:
+                    self.som_tiro.play()
                     jogador.tiro( self.lista[ "tiros" ], self.imagem_tiro )        
     # handle_events()
 
