@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 import pygame
+import media
 
 class EzMenu:
 
     def __init__(self, *options):
 
         self.options = options
+        self.tiro = media.obter_som('item-menu.ogg')
         self.x = 0
         self.y = 0
         self.font = pygame.font.Font(None, 32)
@@ -39,8 +41,10 @@ class EzMenu:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_DOWN:
                     self.option += 1
+                    self.tiro.play()
                 if e.key == pygame.K_UP:
                     self.option -= 1
+                    self.tiro.play()
                 if e.key == pygame.K_RETURN:
                     self.options[self.option][1]()
         if self.option > len(self.options)-1:
