@@ -10,11 +10,13 @@ Este é o pacote do projeto TINANU.
 
 __author__  = 'Charles Tim Batista Garrocho'
 
-__version__ = '0.1.1'
+__version__ = '0.2.1'
 
 __all__ = [
     'app.py',
     'atores.py',
+    'media.py',
     'menu.py',
+    'motor.py',
     'settings.py',
 ]
