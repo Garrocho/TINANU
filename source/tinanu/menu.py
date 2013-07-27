@@ -9,7 +9,7 @@ Este é o módulo responsável definir as configurações e iniciar o jogo.
 
 import pygame, sys
 from pygame.locals import *
-from ezmenu import *
+from nfmenu import *
 import motor
 import media
 
@@ -24,7 +24,7 @@ class Menu(object):
     def __init__(self, screen):
         media.executar_musica("menu.ogg", 0.75)
         self.screen = screen
-        self.menu = EzMenu(["Novo Jogo", lambda: novoJogo(screen)], ["Sair", sys.exit])
+        self.menu = NFMenu(["Novo Jogo", lambda: novoJogo(screen)], ["Sair", sys.exit])
         self.menu.set_highlight_color((255, 0, 0))
         self.menu.set_normal_color((255, 255, 255))
         self.menu.center_at(300, 400)
