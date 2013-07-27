@@ -2,7 +2,7 @@
 import pygame
 import media
 
-class EzMenu:
+class NFMenu:
 
     def __init__(self, *vetor_funcoes_menu):
 
