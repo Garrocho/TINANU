@@ -35,39 +35,56 @@ def carrega(tipo, nome_arquivo, modo='rb'):
 def carrega_fonte(nome_arquivo):
     return endereco_arquivo('fontes', nome_arquivo)
 
+
 def carrega_imagem(nome_arquivo):
 	return endereco_arquivo('imagens', nome_arquivo)
 
+
 def carrega_imagem_menu(nome_arquivo):
-	filename = carrega('imagens', nome_arquivo)
-	try:
-		image = pygame.image.load(filename)
-		return image
-		image = pygame.transform.scale(image, (image.get_width()*2, image.get_height()*2))
-	except pygame.error:
-		raise SystemExit, "Unable to load: " + filename
-	return image
+    nome_arquivo = carrega('imagens', nome_arquivo)
+    try:
+        image = pygame.image.load(nome_arquivo)
+    except pygame.error:
+        raise SystemExit, "Unable to load: " + nome_arquivo
+    return image
+
 
 def carrega_son(nome_arquivo):
     return carrega('sons', nome_arquivo)
 
-def executar_musica(filename, volume=0.5, loop=-1):
-    filename = carrega_son(filename)
+
+def executar_musica(nome_arquivo, volume=0.5, loop=-1):
+    nome_arquivo = carrega_son(nome_arquivo)
     try:
-        pygame.mixer.music.load(filename)
+        pygame.mixer.music.load(nome_arquivo)
         pygame.mixer.music.set_volume(volume)
         pygame.mixer.music.play(loop)
     except:
-        raise SystemExit, "Unable to load: " + filename
+        raise SystemExit, "Unable to load: " + nome_arquivo
+
 
 def parar_musica():
     pygame.mixer.music.stop()
 
-def obter_som(filename, volume=1.0):
-    filename = carrega_son(filename)
+
+def obter_som(nome_arquivo, volume=1.0):
+    nome_arquivo = carrega_son(nome_arquivo)
     try:
-        sound = pygame.mixer.Sound(filename)
-        sound.set_volume(volume)
+        som = pygame.mixer.Sound(nome_arquivo)
+        som.set_volume(volume)
     except:
-        raise SystemExit, "Unable to load: " + filename
-    return sound
+        raise SystemExit, "Unable to load: " + nome_arquivo
+    return som
+
+
+def carregar_sprites_fatias(w, h, nome_arquivo):
+    imagens = []
+    nome_arquivo = carrega('imagens', nome_arquivo)
+    mestre_w, mestre_h = master_image.get_size()
+    colunas = mestre_w / w
+    linhas = mestre_h / h
+    for i in xrange (linhas):
+        for j in xrange (colunas):
+            pequeno_sprite = master_image.subsurface((j*w,i*h,w,h))
+            imagens.append(pequeno_sprite)
+    return imagens
