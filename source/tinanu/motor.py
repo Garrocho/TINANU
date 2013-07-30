@@ -242,9 +242,10 @@ class Game:
         
         # criamos mais inimigos randomicamente para o jogo não ficar chato
         r = random.randint( 0, 100 )
+        bhvr = random.randint( 0, 2 )
         x = random.randint( 1, self.screen_size[ 0 ] / 20 )
         if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
-            inimigo = Inimigo( posicao = [ 0, 0 ], explosao = self.som_explosao, imagem = self.imagem_inimigo )
+            inimigo = Inimigo( posicao = [ 0, 0 ], explosao = self.som_explosao, behaviour = bhvr, imagem = self.imagem_inimigo )
             size    = inimigo.get_size()
             inimigo.set_posicao( [ x * size[ 0 ], - size[ 1 ] ] )
             self.lista[ "inimigos" ].add( inimigo )
