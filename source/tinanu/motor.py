@@ -7,14 +7,13 @@
 Este é o módulo responsável por toda interação dos atores no jogo.
 """
 
-
 import copy
 import media
 import pygame
 import random
 import settings
-from pygame.locals import *
 from atores import *
+from pygame.locals import *
 
 
 class JogadorXPStatus:
@@ -34,11 +33,9 @@ class JogadorXPStatus:
             self.bgcolor = pygame.color.Color( bgcolor )
         self.posicao = posicao or [ 0, 0 ]
         self.fonte   = pygame.font.Font( fonte, ptsize )
-    # __init__()
 
     def update( self, dt ):
         pass
-    # update()
 
     def draw( self, screen ):
         xp = self.jogador.get_XP()
@@ -49,10 +46,7 @@ class JogadorXPStatus:
                 self.imagem = self.fonte.render( texto, True, self.fgcolor, self.bgcolor )
             else:                
                 self.imagem = self.fonte.render( texto, True, self.fgcolor )
-                
-        screen.blit( self.imagem, self.posicao )   
-    # draw()
-# JogadorXPStatus
+        screen.blit( self.imagem, self.posicao )
 
 
 class JogadorVidaStatus:
@@ -65,24 +59,20 @@ class JogadorVidaStatus:
     size_image = None
     spacing    = 5
 
-    def __init__( self, jogador, posicao=None, end_imagem= media.carrega_imagem(settings.IMG_NAVE_STATUS) ):
-        self.imagem     = pygame.image.load( end_imagem )
+    def __init__( self, jogador, image, posicao=None ):
+        self.imagem     = image
         self.jogador    = jogador
         self.posicao    = posicao or [ 5, 5 ]
         self.size_image = self.imagem.get_size()
-    # __init__()
 
     def update( self, dt ):
         pass
-    # update()
 
     def draw( self, screen ):
         posicao = copy.copy( self.posicao )
         for i in range( self.jogador.get_vidas() ):
             posicao[ 0 ] += self.size_image[ 0 ] + self.spacing
             screen.blit( self.imagem, posicao )
-    # draw()
-# JogadorVidaStatus
 
 
 class Game:
@@ -102,24 +92,32 @@ class Game:
         """
         atores = {}
         media.executar_musica("musica.ogg", 0.75)
-        self.som_tiro = media.obter_som('tiro.wav') 
         self.screen      = screen
         self.screen_size = self.screen.get_size()
 
         pygame.mouse.set_visible( 0 )
         pygame.display.set_caption( 'TiNaNu - Tiro nas Nuvens' )
-        self.carrega_imagens()
-    # init()
+        self.carrega_dados()
 
-    def carrega_imagens( self ):
+    def carrega_dados( self ):
         """
-        Lê as imagens necessarias pelo jogo.
+        Lê as imagens e sons necessarios pelo jogo.
         """
+        # imagens
         self.imagem_jogador      = pygame.image.load( media.carrega_imagem(settings.IMG_NAVE_JOGADOR) )
         self.imagem_inimigo      = pygame.image.load( media.carrega_imagem(settings.IMG_NAVE_INIMIGO) )
         self.imagem_tiro         = pygame.image.load( media.carrega_imagem(settings.IMG_TIRO_JOGADOR) )
         self.imagem_tiro_inimigo = pygame.image.load( media.carrega_imagem(settings.IMG_TIRO_INIMIGO) )
-    # carrega_imagens()
+        self.imagem_fase_1       = pygame.image.load( media.carrega_imagem(settings.IMG_TILE_1) )
+        self.imagem_fase_2       = pygame.image.load( media.carrega_imagem(settings.IMG_TILE_2) )
+        self.imagem_fase_3       = pygame.image.load( media.carrega_imagem(settings.IMG_TILE_3) )
+        self.imagem_fase_4       = pygame.image.load( media.carrega_imagem(settings.IMG_TILE_4) )
+        self.imagem_fase_5       = pygame.image.load( media.carrega_imagem(settings.IMG_TILE_5) )
+        self.imagem_vida         = pygame.image.load( media.carrega_imagem(settings.IMG_NAVE_STATUS) )
+
+        # sons
+        self.som_tiro     = media.obter_som('tiro.wav')
+        self.som_explosao = media.obter_som('explosao.wav')
 
     def handle_events( self ):
         """
@@ -167,7 +165,6 @@ class Game:
                 if keys[ K_RCTRL ] or keys[ K_LCTRL ]:
                     self.som_tiro.play()
                     jogador.tiro( self.lista[ "tiros" ], self.imagem_tiro )        
-    # handle_events()
 
     def atores_update( self, dt ):
         self.background.update( dt )
@@ -175,7 +172,6 @@ class Game:
             ator.update( dt )
         self.jogador_vida.update( dt )
         self.jogador_xp.update( dt )
-    # atores_update()
 
     def atores_draw( self ):
         self.background.draw( self.screen )
@@ -183,7 +179,6 @@ class Game:
             ator.draw( self.screen )
         self.jogador_vida.draw( self.screen )
         self.jogador_xp.draw( self.screen )
-    # atores_draw()
 
     def ator_check_hit( self, ator, lista, acao ):
         if isinstance( ator, pygame.sprite.RenderPlain ):
@@ -197,7 +192,6 @@ class Game:
             if pygame.sprite.spritecollide( ator, lista, 1 ):
                 acao()
             return ator.is_dead()
-    # ator_check_hit()
 
     def atores_act( self ):
         # Verifica se personagem foi atingido por um tiro
@@ -215,29 +209,27 @@ class Game:
         # Verifica se o personagem atingiu algum alvo.
         hitted = self.ator_check_hit( self.lista[ "tiros" ], self.lista[ "inimigos" ], Inimigo.do_hit )
         
-        # Aumenta a eXPeriência baseado no número de acertos:
+        # Aumenta a experiência baseado no número de acertos:
         self.jogador.set_XP( self.jogador.get_XP() + len( hitted ) )
-    # atores_check_hit()
 
     def modifica_level( self ):
         xp = self.jogador.get_XP()
         if xp > 5  and self.level == 0:
-            self.background = Background( media.carrega_imagem(settings.IMG_TILE_2) )
+            self.background = Background( self.imagem_fase_2 )
             self.level = 1
             self.jogador.set_vidas( self.jogador.get_vidas() + 2 )
         elif xp > 10  and self.level == 1:
-            self.background = Background( media.carrega_imagem(settings.IMG_TILE_3) )
+            self.background = Background( self.imagem_fase_3 )
             self.level = 2        
             self.jogador.set_vidas( self.jogador.get_vidas() + 4 )
-        elif xp > 15  and self.level == 2:
-            self.background = Background( media.carrega_imagem(settings.IMG_TILE_4) )
+        elif xp > 20  and self.level == 2:
+            self.background = Background( self.imagem_fase_4 )
             self.level = 3      
             self.jogador.set_vidas( self.jogador.get_vidas() + 6 )
-        elif xp > 20  and self.level == 3:
-            self.background = Background( media.carrega_imagem(settings.IMG_TILE_5) )
-            self.level = 4   
+        elif xp > 30  and self.level == 3:
+            self.background = Background( self.imagem_fase_5 )
+            self.level = 4
             self.jogador.set_vidas( self.jogador.get_vidas() + 8 )
-    # modifica_level()
 
     def manage( self ):
         self.ticks += 1
@@ -252,21 +244,20 @@ class Game:
         r = random.randint( 0, 100 )
         x = random.randint( 1, self.screen_size[ 0 ] / 20 )
         if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
-            inimigo = Inimigo( posicao = [ 0, 0 ], imagem = self.imagem_inimigo )
+            inimigo = Inimigo( posicao = [ 0, 0 ], explosao = self.som_explosao, imagem = self.imagem_inimigo )
             size    = inimigo.get_size()
             inimigo.set_posicao( [ x * size[ 0 ], - size[ 1 ] ] )
             self.lista[ "inimigos" ].add( inimigo )
 
-        # Verifica se ascendeu de nível
+        # Verifica se modificou o level
         self.modifica_level()
-    # manage()
 
     def loop( self ):
         """
         Laço principal
         """
         # Criamos o fundo
-        self.background = Background( media.carrega_imagem(settings.IMG_TILE_1) )
+        self.background = Background( self.imagem_fase_1 )
 
         # Inicializamos o relogio e o dt que vai limitar o valor de
         # frames por segundo do jogo
@@ -276,19 +267,19 @@ class Game:
         self.intervalo = 1
 
         posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] ]
-        self.jogador = Jogador( posicao, vidas=10, imagem = self.imagem_jogador )
+        self.jogador = Jogador( posicao = posicao, explosao = self.som_explosao, vidas=10, imagem = self.imagem_jogador )
 
         self.lista = {
             "jogador"       : pygame.sprite.RenderPlain( self.jogador ),
-            "inimigos"      : pygame.sprite.RenderPlain( Inimigo( posicao = [ 120, 0 ], imagem = self.imagem_inimigo ) ),
+            "inimigos"      : pygame.sprite.RenderPlain( Inimigo( posicao = [ 120, 0 ], explosao = self.som_explosao, imagem = self.imagem_inimigo ) ),
             "tiros"         : pygame.sprite.RenderPlain(),
             "tiro_inimigo"  : pygame.sprite.RenderPlain()
             }
 
-        self.jogador_vida = JogadorVidaStatus( self.jogador, [ 5, 5 ] )
+        self.jogador_vida = JogadorVidaStatus( jogador = self.jogador, image = self.imagem_vida, posicao = [ 5, 5 ] )
         self.jogador_xp   = JogadorXPStatus( self.jogador, [ self.screen_size[ 0 ] - 100, 5 ], fgcolor="0xff0000" )
 
-        # assim iniciamos o loop principal do programa
+        # Loop principal do programa
         while self.run:
             clock.tick( 1000 / dt )
             self.intervalo += 1
@@ -305,11 +296,8 @@ class Game:
             # Faça a manutenção do jogo, como criar inimigos, etc.
             self.manage()
             
-            # Desenhe para o back buffer
+            # Desenhe os elementos do jogo.
             self.atores_draw()
             
-            # ao fim do desenho temos que trocar o front buffer e o back buffer
+            # Por fim atualize o screen do jogo.
             pygame.display.flip()
-        # while self.run
-    # loop()
-# Game
