@@ -7,10 +7,10 @@
 Este é o módulo responsável definir as configurações do menu inicial do jogo.
 """
 
-import pygame, sys
-from pygame.locals import *
 import motor
 import media
+import pygame, sys
+from pygame.locals import *
 
 
 def novoJogo(screen):
