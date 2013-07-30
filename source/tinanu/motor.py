@@ -241,7 +241,7 @@ class Game:
                     self.ticks = 0
         
         # criamos mais inimigos randomicamente para o jogo não ficar chato
-        r = random.randint( 0, 100 )
+        r = random.randint( 0, (self.level + 1) * 100 )
         bhvr = random.randint( 0, 2 )
         x = random.randint( 1, self.screen_size[ 0 ] / 20 )
         if ( r > ( 40 * len( self.lista[ "inimigos" ] ) ) ):
